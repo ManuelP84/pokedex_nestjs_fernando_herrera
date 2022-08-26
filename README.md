@@ -17,7 +17,11 @@ npm install -g @nestjs/cli
 ```
 docker-compose up -d
 ```
-5. Run command (on development)
+5. Clone the file ___.env.template___ and rename it to  ___.env___
+
+6. Fill the environment variables into ___.env___
+
+7. Run the app (on development) with the command: 
 ```
 npm run start:dev
 ```

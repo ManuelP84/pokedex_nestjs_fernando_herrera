@@ -8,8 +8,6 @@ import { AxiosAdapter } from '../common/adapter';
 @Injectable()
 export class SeedService {
   
-  private readonly POKEMONS_LIMIT: number = 650;
-
   constructor(
     @InjectModel(Pokemon.name)
     private readonly pokemonModel: Model<Pokemon>,
@@ -20,7 +18,7 @@ export class SeedService {
     await this.pokemonModel.deleteMany({});
 
     const data = await this.http.get<PokeResponse>(
-      `https://pokeapi.co/api/v2/pokemon?limit=${this.POKEMONS_LIMIT}`,
+      `https://pokeapi.co/api/v2/pokemon?limit=650`,
     );
 
     // To make multiple insertions: SOLUTION 1.
