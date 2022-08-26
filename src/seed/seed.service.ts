@@ -1,19 +1,54 @@
 import { Injectable } from '@nestjs/common';
-import axios, { AxiosInstance } from 'axios';
 import { PokeResponse } from './interface';
+import { Pokemon } from 'src/pokemon/entities';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { AxiosAdapter } from '../common/adapter';
 
 @Injectable()
 export class SeedService {
-  private readonly axios: AxiosInstance = axios;
-  private readonly POKEMONS_LIMIT: number = 10;
+  
+  private readonly POKEMONS_LIMIT: number = 650;
+
+  constructor(
+    @InjectModel(Pokemon.name)
+    private readonly pokemonModel: Model<Pokemon>,
+    private readonly http: AxiosAdapter,
+  ) {}
 
   async executeSeed() {
-    const {data} = await this.axios.get<PokeResponse>(`https://pokeapi.co/api/v2/pokemon?limit=${this.POKEMONS_LIMIT}`);
+    await this.pokemonModel.deleteMany({});
 
-    data.results.forEach(({name, url}) => {
+    const data = await this.http.get<PokeResponse>(
+      `https://pokeapi.co/api/v2/pokemon?limit=${this.POKEMONS_LIMIT}`,
+    );
+
+    // To make multiple insertions: SOLUTION 1.
+    const pokemonsToInsert: { name: string; no: number }[] = [];
+
+    data.results.forEach(({ name, url }) => {
       const segments = url.split('/');
-      console.log({name, no: +segments[segments.length-2]});      
-    })
-    return data.results;
+      const no = +segments[segments.length - 2];
+
+      pokemonsToInsert.push({ name, no });
+    });
+
+    await this.pokemonModel.insertMany(pokemonsToInsert);
+
+    // To make multiple insertions: SOLUTION 2.
+    // const insertPromisesArray = [];
+
+    // data.results.forEach(({ name, url }) => {
+
+    //   const segments = url.split('/');
+    //   const no = +segments[segments.length - 2];
+
+    //   insertPromisesArray.push(
+    //     this.pokemonModel.create({name, no})
+    //   );
+
+    // });
+    // await Promise.all(insertPromisesArray);
+    return { result: 'Seed executed' };
   }
 }
