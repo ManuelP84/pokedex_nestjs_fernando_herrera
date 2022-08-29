@@ -5,6 +5,10 @@
 # mongo backup in filesystem
 /mongo
 
+# environments
+.env
+.env.prod
+
 # Logs
 logs
 *.log

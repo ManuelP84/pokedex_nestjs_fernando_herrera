@@ -13,7 +13,7 @@ import {
 import { PokemonService } from './pokemon.service';
 import { CreatePokemonDto } from './dto/create-pokemon.dto';
 import { UpdatePokemonDto } from './dto/update-pokemon.dto';
-import { ParseMongoIdPipe } from 'src/common/pipes';
+import { ParseMongoIdPipe } from '../common/pipes';
 import { PaginationDto } from '../common/dto';
 
 @Controller('pokemon')
